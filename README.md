@@ -1,4 +1,4 @@
-# Mixtape CLI
+# Mixtape
 Are you tired of music streaming services? No sufficient wifi at the gym? Need some entertainment in your morning commute? If you answered YES to any of these questions, you should try mixtape. mixtape is a simple command line tool that allows you to create your own playlists directly from youtube. All you need is a text file with youtube urls and a catchy name. It will download the videos as `mp3`, figure out the songs metadata (to its best ability), add album artwork and organize it nicely in your computer. Take advantage of the enormous amount of content youtube offers, and build your favourite, private, _offline_ treasures. Just like the Good Ol' Days 💽 📼 📀
 
 ## Install
