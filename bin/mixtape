@@ -1,0 +1,91 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const commandLineArgs = require('command-line-args');
+const getUsage = require('command-line-usage');
+const package = require('../package.json');
+
+//
+// Define command line arguments
+//
+const optionDefinitions = [
+  { name: 'tracks', alias: 'T', type: String },
+  { name: 'out', alias: 'O' ,type: String },
+  { name: 'name', alias: 'N' ,type: String },
+  { name: 'help', alias: 'H', type: Boolean },
+]
+
+const options = commandLineArgs(optionDefinitions)
+
+//
+// Print Help
+//
+if (Object.keys(options).length === 0 || options['help']) {
+  const sections = [
+    {
+      header: `Mixtape v${package.version}`,
+      content: `${package.description}
+        You need to create a text file with urls of youtube videos (one url per line). Mixtape will create a folder containing mp3 files with the proper metadata and an album artwork. on a Mac you can integrate directly with iTunes.
+
+        The project assumes you have the following packages installed:
+        -> ffmpeg https://ffmpeg.org/`
+    },
+    {
+      header: 'Options',
+      optionList: [
+        {
+          name: 'tracks, -T',
+          typeLabel: '[underline]{file}',
+          description: `A text file containing a list of youtube video urls. One url per line!`
+        },
+        {
+          name: 'out, -O',
+          typeLabel: '[underline]{string}',
+          description: 'Output directory. default is current directory',
+        },
+        {
+          name: 'name, -N',
+          typeLabel: '[underline]{string}',
+          description: 'The name of your mixtape (the song\'s album). default name is `Mixtape`'
+        },
+        {
+          name: 'help, -H',
+          description: 'Print this usage guide.'
+        }
+      ]
+    }
+  ]
+  const usage = getUsage(sections)
+  return console.log(usage)
+}
+
+//
+// Validations
+//
+const tracksFile = options['tracks']
+
+if (!tracksFile) {
+  return console.error('[Error] Required argument \'playlist\' is missing');
+}
+
+if(!fs.existsSync(tracksFile) || fs.lstatSync(tracksFile).isDirectory()) {
+  return console.error('[Error] Playlist file not found or is invalid');
+}
+
+const YOUTUBE_URL_PATTERN = /(http|https):\/\/www.youtube.com\/watch\?v\=.{11}|https:\/\/youtu.be\/.{11}/
+
+const tracks = fs.readFileSync(tracksFile)
+  .toString()
+  .split('\n')
+  .filter((track) => track != '')
+
+
+if(!tracks.every((track) => track.match(YOUTUBE_URL_PATTERN))) {
+  return console.error('[Error] Playlist file is invalide. Make sure there is a single youtube url per line');
+}
+
+//
+// Passed Validations. Start processing.
+//
+const mixtape = require('../index');
+mixtape(tracks, options);
