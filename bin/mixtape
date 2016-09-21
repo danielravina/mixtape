@@ -13,9 +13,17 @@ const optionDefinitions = [
   { name: 'out', alias: 'O' ,type: String },
   { name: 'name', alias: 'N' ,type: String },
   { name: 'help', alias: 'H', type: Boolean },
+  { name: 'version', alias: 'V', type: Boolean },
 ]
 
 const options = commandLineArgs(optionDefinitions)
+
+//
+// Print Version
+//
+if (options['version']) {
+  return console.log(package.version)
+}
 
 //
 // Print Help
@@ -23,7 +31,7 @@ const options = commandLineArgs(optionDefinitions)
 if (Object.keys(options).length === 0 || options['help']) {
   const sections = [
     {
-      header: `Mixtape v${package.version}`,
+      header: 'Mixtape',
       content: `${package.description}
         You need to create a text file with urls of youtube videos (one url per line). Mixtape will create a folder containing mp3 files with the proper metadata and an album artwork. on a Mac you can integrate directly with iTunes.
 
@@ -36,7 +44,7 @@ if (Object.keys(options).length === 0 || options['help']) {
         {
           name: 'tracks, -T',
           typeLabel: '[underline]{file}',
-          description: `A text file containing a list of youtube video urls. One url per line!`
+          description: `A text file containing a list of youtube video urls.`
         },
         {
           name: 'out, -O',
@@ -46,11 +54,15 @@ if (Object.keys(options).length === 0 || options['help']) {
         {
           name: 'name, -N',
           typeLabel: '[underline]{string}',
-          description: 'The name of your mixtape (the song\'s album). default name is `Mixtape`'
+          description: 'The name of your mixtape (default is `Mixtape`)'
         },
         {
           name: 'help, -H',
-          description: 'Print this usage guide.'
+          description: 'Print help'
+        },
+        {
+          name: 'version, -V',
+          description: 'Print the current version'
         }
       ]
     }
@@ -78,6 +90,7 @@ const tracks = fs.readFileSync(tracksFile)
   .toString()
   .split('\n')
   .filter((track) => track != '')
+  .map((track) => track.trim())
 
 
 if(!tracks.every((track) => track.match(YOUTUBE_URL_PATTERN))) {
@@ -87,5 +100,10 @@ if(!tracks.every((track) => track.match(YOUTUBE_URL_PATTERN))) {
 //
 // Passed Validations. Start processing.
 //
+console.log("Creating your mixtape.. Hold tight!")
 const mixtape = require('../index');
-mixtape(tracks, options);
+
+mixtape(tracks, options).then((outDir) => {
+  console.log("All Done!");
+  console.log(`You can find your mixtape here: ${outDir}`);
+})

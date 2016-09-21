@@ -87,7 +87,9 @@ const mixtape = (trackUrls = [], options = {}) => {
     ).then((infos) => postDownload(infos))
   }
 
-  return run()
+  return new Promise ((resolve, reject) =>{
+    run().then(()=> resolve(mixtapeDir))
+  })
 }
 
 module.exports = mixtape
