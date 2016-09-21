@@ -25,6 +25,7 @@ Once installed when you call `mixtape` from anywhere. There are few option you c
 1. Browse youtube and pick the videos/songs you want to save.
 2. Copy/Pase the url into a plain text file and call it `oldies.txt` (for exmaple).
 The file should look like that:
+
   ```
   https://www.youtube.com/watch?v=dQw4w9WgXcQ
   https://youtu.be/cYMCLz5PQVw
