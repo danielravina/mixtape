@@ -14,10 +14,10 @@ $ npm install -g mixtape-cli
 
 Once installed when you call `mixtape` from anywhere. There are few option you can pass to it:
 ```
---tracks, -T file   A text file containing a list of youtube video urls.
---out, -O string    Output directory. default is current directory
---help, -H          Print help.
---version, -V       Print the current version
+--tracks, -T    A text file containing a list of youtube video urls.
+--out, -O       Output directory. default is current directory
+--help, -H      Print help.
+--version, -V   Print the current version
 ```
 
 ## How to use mixtape?
