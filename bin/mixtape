@@ -4,6 +4,7 @@ const fs = require('fs');
 const commandLineArgs = require('command-line-args');
 const getUsage = require('command-line-usage');
 const package = require('../package.json');
+const ora = require('ora');
 
 //
 // Define command line arguments
@@ -100,10 +101,12 @@ if(!tracks.every((track) => track.match(YOUTUBE_URL_PATTERN))) {
 //
 // Passed Validations. Start processing.
 //
-console.log("Creating your mixtape.. Hold tight!")
+const spinner = ora().start();
+spinner.text = "Creating your mixtape.. Hold tight!"
+
 const mixtape = require('../index');
 
 mixtape(tracks, options).then((outDir) => {
-  console.log("All Done!");
-  console.log(`You can find your mixtape here: ${outDir}`);
+  spinner.text = `All Done! You can find your mixtape here: ${outDir}`;
+  spinner.succeed()
 })
