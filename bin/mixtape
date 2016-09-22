@@ -5,6 +5,7 @@ const commandLineArgs = require('command-line-args');
 const getUsage = require('command-line-usage');
 const package = require('../package.json');
 const ora = require('ora');
+const mixtape = require('../index');
 
 //
 // Define command line arguments
@@ -12,12 +13,11 @@ const ora = require('ora');
 const optionDefinitions = [
   { name: 'tracks', alias: 'T', type: String },
   { name: 'out', alias: 'O' ,type: String },
-  { name: 'name', alias: 'N' ,type: String },
   { name: 'help', alias: 'H', type: Boolean },
   { name: 'version', alias: 'V', type: Boolean },
 ]
 
-const options = commandLineArgs(optionDefinitions)
+let options = commandLineArgs(optionDefinitions)
 
 //
 // Print Version
@@ -51,11 +51,6 @@ if (Object.keys(options).length === 0 || options['help']) {
           name: 'out, -O',
           typeLabel: '[underline]{string}',
           description: 'Output directory. default is current directory',
-        },
-        {
-          name: 'name, -N',
-          typeLabel: '[underline]{string}',
-          description: 'The name of your mixtape (default is `Mixtape`)'
         },
         {
           name: 'help, -H',
@@ -101,12 +96,24 @@ if(!tracks.every((track) => track.match(YOUTUBE_URL_PATTERN))) {
 //
 // Passed Validations. Start processing.
 //
+
+// Get the name of the mixtape from the tracks filename
+const tracksPathParts = tracksFile.split('/')
+options.name = tracksPathParts[tracksPathParts.length-1]
+// remove file extension
+if(options.name.includes('.')) {
+  options.name = options.name.split('.')[0]
+}
+
+// Load the spinner
 const spinner = ora().start();
 spinner.text = "Creating your mixtape.. Hold tight!"
 
-const mixtape = require('../index');
-
-mixtape(tracks, options).then((outDir) => {
-  spinner.text = `All Done! You can find your mixtape here: ${outDir}`;
-  spinner.succeed()
-})
+try {
+  mixtape(tracks, options).then((mixtapeDir) => {
+    spinner.text = `All Done! You can find your mixtape here: ${mixtapeDir}`;
+    spinner.succeed()
+  })
+} catch (e) {
+  console.log(err);
+} 

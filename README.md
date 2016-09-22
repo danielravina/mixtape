@@ -16,14 +16,13 @@ Once installed when you call `mixtape` from anywhere. There are few option you c
 ```
 --tracks, -T file   A text file containing a list of youtube video urls.
 --out, -O string    Output directory. default is current directory
---name, -N string   The name of your mixtape (default is `Mixtape`)
 --help, -H          Print help.
 --version, -V       Print the current version
 ```
 
 ## How to use mixtape?
 1. Browse youtube and pick the videos/songs you want to save.
-2. Copy/Pase the url into a plain text file and call it `oldies.txt` (for exmaple).
+2. Copy/Paste the url into a plain text file and call it `Oldies.txt`. (The album name will be the filename)
 The file should look like that:
 
   ```
@@ -33,10 +32,10 @@ The file should look like that:
   ```
 3. Create your mixtape!
 ```
-$ mixtape --track oldies.txt --name Oldies --out ~/Music
+$ mixtape --track Oldies.txt --out ~/Music
 Creating your mixtape.. Hold tight!
-All Done!
-You can find your mixtape here: /Users/johnny/Music/Oldies
+⠦ Creating your mixtape.. Hold tight!
+✔ All Done! You can find your mixtape here: /Users/johnny/Music/Oldies
 ```
 
 And this is what you get:
@@ -51,7 +50,6 @@ $ tree ~/Music
 
 1 directory, 3 files
 ```
-
 Enjoy. 🎧
 
 ## Use it as a node package
@@ -66,7 +64,11 @@ const tracks = [
   'https://www.youtube.com/watch?v=PDZcqBgCS74'
 ]
 
-mixtape(tracks).then((outDir) => {
+const options = {
+  name: 'Oldies'
+}
+
+mixtape(tracks, options).then((outDir) => {
   console.log("All Done!");
   console.log(`your mixtape is saved in ${outDir}`);)
 })
