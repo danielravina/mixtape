@@ -6,7 +6,7 @@ const getUsage = require('command-line-usage');
 const package = require('../package.json');
 const ora = require('ora');
 const mixtape = require('../index');
-
+const { exec } = require('child_process')
 //
 // Define command line arguments
 //
@@ -80,7 +80,7 @@ if(!fs.existsSync(tracksFile) || fs.lstatSync(tracksFile).isDirectory()) {
   return console.error('[Error] Playlist file not found or is invalid');
 }
 
-const YOUTUBE_URL_PATTERN = /(http|https):\/\/www.youtube.com\/watch\?v\=.{11}|https:\/\/youtu.be\/.{11}/
+const YOUTUBE_URL_PATTERN = /https:\/\/www.youtube.com\/watch\?v\=.{11}|https:\/\/youtu.be\/.{11}/
 
 const tracks = fs.readFileSync(tracksFile)
   .toString()
@@ -109,11 +109,9 @@ if(options.name.includes('.')) {
 const spinner = ora().start();
 spinner.text = "Creating your mixtape.. Hold tight!"
 
-try {
-  mixtape(tracks, options).then((mixtapeDir) => {
-    spinner.text = `All Done! You can find your mixtape here: ${mixtapeDir}`;
-    spinner.succeed()
-  })
-} catch (e) {
-  console.log(err);
-} 
+mixtape(tracks, options).then((mixtapeDir) => {
+  spinner.text = `All Done! You can find your mixtape here: ${mixtapeDir}`;
+  fs.unlinkSync(tracksFile)
+  exec(`open ${mixtapeDir}`)
+  spinner.succeed()
+})

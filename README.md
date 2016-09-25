@@ -32,8 +32,7 @@ The file should look like that:
   ```
 3. Create your mixtape!
 ```
-$ mixtape --track Oldies.txt --out ~/Music
-Creating your mixtape.. Hold tight!
+$ mixtape --tracks Oldies.txt --out ~/Music
 ⠦ Creating your mixtape.. Hold tight!
 ✔ All Done! You can find your mixtape here: /Users/johnny/Music/Oldies
 ```

@@ -1,34 +1,34 @@
-const mixtape = require('..')
+const mixtape = require('..');
 const expect = require('expect');
 const fs = require('fs');
 const path = require('path');
-const rimraf = require('rimraf')
-const ffmetadata = require('ffmetadata')
+const rimraf = require('rimraf');
+const ffmetadata = require('ffmetadata');
 
 describe('mixtape', () => {
-  context("when no tracks supplied", () =>{
-    it("should return null", () => {
-      expect(mixtape([])).toEqual(null)
-    })
-  })
+  context('when no tracks supplied', () => {
+    it('should return null', () => {
+      expect(mixtape([])).toEqual(null);
+    });
+  });
 
-  context("when one track supplied", () => {
+  context('when one track supplied', () => {
     beforeEach(() => {
-      this.options = { out: 'test/tmp', name: 'MyMixTape' }
-      fs.mkdirSync(this.options.out)
-    })
+      this.options = { out: 'test/tmp', name: 'MyMixTape' };
+      fs.mkdirSync(this.options.out);
+    });
 
-    it("should create an mp3 track", (done) => {
-      const videoName = "Introducing Google Trips"
-      const expectedPath = path.resolve(__dirname, 'tmp' , this.options.name, videoName + '.mp3')
-      const tracks = ['https://www.youtube.com/watch?v=ign2GmVEflw']
+    it('should create an mp3 track', (done) => {
+      const videoName = 'Introducing Google Trips';
+      const expectedPath = path.resolve(__dirname, 'tmp' , this.options.name, videoName + '.mp3');
+      const tracks = [ 'https://www.youtube.com/watch?v=ign2GmVEflw' ];
 
-      mixtape(tracks, this.options).then(() => {
-        // this is needed due to deadlock issues.
-        setTimeout(()=>{
+      mixtape(tracks, this.options).then((a) => {
+        // setTimeout is needed due to deadlock issues.
+        setTimeout(() => {
           // check that file created
-          expect(fs.existsSync(expectedPath)).toEqual(true)
-
+          expect(fs.existsSync(expectedPath)).toEqual(true);
+          console.log(expectedPath);
           // check that meta is correct
           ffmetadata.read(expectedPath, (err, data) => {
             expect(data).toInclude({
@@ -36,17 +36,17 @@ describe('mixtape', () => {
               artist: 'Various Artists',
               title: videoName,
               track: '1'
-            })
-            done()
+            });
+            done();
           });
-        }, 100)
-      })
-    })
+        }, 1000);
+      });
+    });
 
-    afterEach(() => {
+    afterEach(() => { // eslint-disable-line
       // resolve to mixtape/test/MyMixTape/file.mp3
-      rimraf(path.resolve(__dirname, 'tmp' ,this.options.name), {}, () => {})
-    })
-  })
+      rimraf(path.resolve(__dirname, 'tmp' ,this.options.name), {}, () => {});
+    });
+  });
 
 });
